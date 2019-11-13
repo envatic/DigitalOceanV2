@@ -192,6 +192,36 @@ $actions = $action->getAll();
 $action123 = $action->getById(123);
 ```
 
+Database
+------
+
+```php
+// return the database api
+$cluster = $digitalocean->databaseCluster();
+
+// return a collection of DatabaseCluster entity
+$clusters = $cluster->getAll();
+
+// return the corresponding DatabaseCluster
+$clusterFoo = $cluster->getById('foo-bar-database-cluster-id');
+
+// return the created DatabaseCluster named 'my_database_cluster'
+$created = $cluster->create('my_database_cluster', 'fra1', 'db-s-2vcpu-4gb', 'mysql');
+
+// resize a database cluster
+$cluster->resize('foo-bar-database-cluster-id', 'db-s-2vcpu-4gb');
+
+// create a database
+$cluster->createDatabase('foo-bar-database-cluster-id', 'my_database');
+
+// delete a database
+$cluster->deleteDatabase('foo-bar-database-cluster-id', 'my_database');
+
+// delete the correspondig database cluster
+$cluster->delete('foo-bar-database-cluster-id');
+
+```
+
 Domain
 ------
 

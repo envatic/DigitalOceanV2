@@ -15,6 +15,7 @@ use DigitalOceanV2\Adapter\AdapterInterface;
 use DigitalOceanV2\Api\Account;
 use DigitalOceanV2\Api\Action;
 use DigitalOceanV2\Api\Certificate;
+use DigitalOceanV2\Api\DatabaseCluster;
 use DigitalOceanV2\Api\Domain;
 use DigitalOceanV2\Api\DomainRecord;
 use DigitalOceanV2\Api\Droplet;
@@ -69,6 +70,14 @@ class DigitalOceanV2
     public function certificate()
     {
         return new Certificate($this->adapter);
+    }
+
+    /**
+     * @return DatabaseCluster
+     */
+    public function databaseCluster()
+    {
+        return new DatabaseCluster($this->adapter);
     }
 
     /**
