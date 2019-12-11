@@ -161,6 +161,88 @@ class DatabaseCluster extends AbstractApi
     {
         $this->adapter->delete(sprintf('%s/databases/%s', $this->endpoint, $id));
     }
+	
+	
+    /**
+     * @param string|null $tag
+     *
+     * @return ReplicaEntity[]
+     */
+    public function getAllReplicas($dbid, $tag = null)
+    {
+        $url = sprintf('%s/databases/%s/replicas', $this->endpoint, $dbid);
+        if (null !== $tag) {
+            $url .= '&tag_name='.$tag;
+        }
+
+        $relicas = json_decode($this->adapter->get($url));
+        $this->extractMeta($relicas);
+        return array_map(function ($relica) {
+            return new ReplicaEntity($relica);
+        }, $relicas->relicas);
+    }
+
+    /**
+     * @param int string
+     *
+     * @throws HttpException
+     *
+     * @return ReplicaEntity
+     */
+    public function getReplicaById($dbid , $id)
+    {
+        $replica = $this->adapter->get(sprintf('%s/databases/%s/replicas/%s', $this->endpoint, $dbid,$id));
+
+        $replica = json_decode($replica);
+        return new ReplicaEntity($replica->replica);
+    }
+
+    /**
+     * @param string $name
+     * @param string $region
+     * @param string $size
+     * @param string $engine
+     * @param string $version
+     * @param int $num_nodes
+     * @param array $tags
+     * @param bool $wait
+     * @param int $waitTimeout
+     *
+     * @return ReplicaEntity|null
+     */
+    public function createReplica($dbid, $name, $region, $size, array $tags = [], $wait = false, $waitTimeout = 300)
+    {
+        $data = [
+            'name' => $name,
+            'region' => $region,
+            'size' => $size,
+        ];
+        if (0 < count($tags)) {
+            $data['tags'] = $tags;
+        }
+
+        $replica = $this->adapter->post(sprintf('%s/databases/%s/replicas', $this->endpoint, $dbid), $data);
+        $replica = json_decode($replica);
+        $replicaEntity = new ReplicaEntity($replica->replica);
+
+        if ($wait) {
+            return $this->waitForActive($replicaEntity, $waitTimeout);
+        }
+
+        return $replicaEntity;
+    }
+
+   
+    /**
+     * @param string $id
+     *
+     * @throws HttpException
+     */
+    public function deleteReplica($dbid , $name)
+    {
+        $this->adapter->delete(sprintf('%s/databases/%s/replicas/%s', $this->endpoint, $dbid , $name));
+    }
+
 
     /**
      * @param DatabaseClusterEntity $database
