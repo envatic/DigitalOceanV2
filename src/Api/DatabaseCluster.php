@@ -13,6 +13,7 @@ namespace DigitalOceanV2\Api;
 
 use DigitalOceanV2\Entity\Action as ActionEntity;
 use DigitalOceanV2\Entity\DatabaseCluster as DatabaseClusterEntity;
+use DigitalOceanV2\Entity\DatabaseReplica as ReplicaEntity;
 use DigitalOceanV2\Exception\HttpException;
 
 /**
